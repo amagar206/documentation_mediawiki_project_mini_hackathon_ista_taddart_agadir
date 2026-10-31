@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tamazight Gadget — Schematic Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Sans+Tifinagh&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f4eedf; --paper:#fbf7ec; --card:#ffffff;
+    --ink:#2f2a24; --charcoal:#272b3a; --muted:#6e6c66; --muted2:#9d9a92;
+    --indigo:#1f3a84; --indigo-soft:#5a6aa8;
+    --terra:#b4502e; --terra-d:#9a4126;
+    --line:rgba(44,58,102,.26);
+    --line-soft:rgba(44,58,102,.12);
+    --mono:'IBM Plex Mono', ui-monospace, 'Consolas', monospace;
+    --sans:'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    --serif:'Marcellus', Georgia, serif;
+    --tif:'Noto Sans Tifinagh', 'Marcellus', serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15.5px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:1500px; margin:0 auto; padding:26px 34px 40px; position:relative;}
+
+  /* ---------------------------------------------------------- top bar */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding-bottom:16px; margin-bottom:6px;
+    border-bottom:2.5px solid var(--terra);
+  }
+  .brand{display:flex; align-items:center; gap:14px; min-width:0;}
+  .logo{width:52px; height:52px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;}
+  .logo img{width:52px; height:52px; object-fit:contain;}
+  .title-tif{font-family:var(--tif); color:var(--indigo); font-size:23px; letter-spacing:.5px; line-height:1;}
+  .brand .sep{width:1.5px; height:30px; background:var(--line); margin:0 2px;}
+  .title-eng{font-family:var(--serif); color:var(--indigo); font-size:30px; letter-spacing:.3px; white-space:nowrap;}
+  .title-sub{font-family:var(--sans); color:var(--muted2); font-size:14px; letter-spacing:.2px; margin-left:4px;}
+  .topright{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
+  .tabs{display:flex; gap:10px;}
+  .tab{
+    appearance:none; cursor:pointer; font-family:var(--sans); font-size:15px; font-weight:500;
+    padding:9px 26px; border-radius:9px; letter-spacing:.2px;
+    border:1px solid var(--line); background:#fff; color:var(--indigo);
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .tab.active{background:var(--terra); color:#fff; border-color:var(--terra);}
+
+  /* ------------------------------------------------------ section head */
+  .sec-head{display:flex; align-items:center; gap:18px; margin:30px 0 20px;}
+  .sec-num{
+    width:44px; height:44px; flex:0 0 auto;
+    background:var(--terra); color:#fff;
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-size:21px;
+  }
+  .sec-title{font-family:var(--serif); font-size:44px; line-height:1; color:var(--indigo); margin:0;}
+  .sec-div{width:1.5px; align-self:stretch; background:var(--line); margin:2px 4px;}
+  .sec-lead .lead-t{font-family:var(--serif); font-size:22px; color:var(--charcoal); line-height:1.15;}
+  .sec-lead .lead-s{font-family:var(--sans); font-size:15px; color:var(--muted); margin-top:3px;}
+
+  /* ------------------------------------------------------- overview grid */
+  .overview{display:grid; grid-template-columns:1fr 400px; gap:26px; align-items:start;}
+  .panel{border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.55); padding:18px 20px;}
+  .panel + .panel{margin-top:22px;}
+  .panel-title{display:flex; align-items:center; gap:11px; margin-bottom:16px;}
+  .panel-title .pt-ic{width:24px; height:24px; object-fit:contain;}
+  .panel-title .pt-svg{width:24px; height:24px; color:var(--indigo);}
+  .panel-title h3{font-family:var(--serif); font-size:23px; color:var(--indigo); margin:0; line-height:1; -webkit-text-stroke:.35px var(--indigo);}
+  .panel-title small{color:var(--muted); font-size:14px; font-family:var(--sans);}
+
+  /* lifecycle 3-card flow */
+  .lifecycle{display:flex; align-items:stretch; gap:0; flex-wrap:wrap;}
+  .lc-card{
+    position:relative; flex:1 1 0; min-width:168px;
+    border:1px solid var(--line); border-radius:14px; background:var(--card);
+    padding:20px 18px 16px; margin-top:12px;
+  }
+  .lc-card.build{flex:1.6 1 0;}
+  .lc-card.review{flex:1.35 1 0;}
+  .lc-head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .lc-badge{
+    width:33px; height:33px; flex:0 0 auto; background:var(--terra); color:#fff;
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12.5px; font-weight:600;
+  }
+  .lc-head h4{font-family:var(--serif); font-size:23px; color:var(--indigo); margin:0; line-height:1; letter-spacing:.2px; -webkit-text-stroke:.35px var(--indigo);}
+  .lc-cap{font-size:13px; color:var(--muted); margin-top:12px; line-height:1.45;}
+  .lc-arrow{display:flex; align-items:center; justify-content:center; color:var(--indigo); padding:0 10px; align-self:center;}
+  .lc-arrow svg{width:30px; height:20px;}
+
+  /* field grid inside Build card */
+  .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .field{display:flex; align-items:center; gap:11px; min-width:0;
+    border:1px solid var(--line-soft); border-radius:12px; background:rgba(255,255,255,.6);
+    padding:14px 14px;}
+  .field img{width:27px; height:27px; object-fit:contain; flex:0 0 auto;}
+  .field .f-tx{min-width:0;}
+  .field .f-tif{font-family:var(--tif); font-size:15px; color:var(--indigo); display:block; line-height:1.2;}
+  .field .f-en{font-family:var(--sans); font-size:15.5px; font-weight:500; color:var(--indigo); display:block; line-height:1.2; white-space:nowrap;}
+
+  /* review wikitext code */
+  .wk{background:#1d2b54; border-radius:10px; padding:16px 18px; font-family:var(--mono); font-size:13.5px; line-height:2; color:#eef1fa; overflow:auto; white-space:pre;}
+  .wk .ln{display:inline-block; width:1.4em; margin-right:16px; color:#6f84c4; user-select:none;}
+  .wk .wk-blue{color:#93a6dd;}
+
+  /* create card */
+  .create-mid{display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px; padding-top:8px;}
+  .create-mid .doc-tile{display:inline-flex; align-items:center; justify-content:center; width:58px; height:58px; border:1px solid var(--line-soft); border-radius:12px; background:rgba(255,255,255,.7);}
+  .create-mid .doc-ic{width:30px; height:30px; color:var(--indigo);}
+  .create-mid .cm-line{font-size:14px; color:var(--muted);}
+  .save-btn{
+    width:100%; background:var(--terra); color:#fff; border:0; border-radius:9px;
+    font-family:var(--serif); font-size:20px; letter-spacing:.5px; padding:13px 0; cursor:default;
+    -webkit-text-stroke:.3px #fff;
+  }
+  .api-chip{font-family:var(--mono); font-size:13.5px; color:var(--indigo); background:rgba(44,58,102,.06); border:1px solid var(--line-soft); border-radius:8px; padding:6px 18px;}
+
+  /* under the hood */
+  .hood-panel{padding:16px 0 0;}
+  .hood-panel .panel-title{margin-bottom:0; padding:0 20px 13px; border-bottom:1px solid var(--line);}
+  .hood{display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; padding:15px 0 2px;}
+  .hood-col{padding:3px 20px; border-left:1px solid var(--line-soft); text-align:center;}
+  .hood-col:first-child{border-left:0;}
+  .hood-col h5{font-family:var(--serif); font-size:17px; color:var(--indigo); margin:0 0 5px; -webkit-text-stroke:.3px var(--indigo);}
+  .hood-col p{margin:0; font-size:13.5px; color:var(--muted); line-height:1.5;}
+
+  /* two panels row */
+  .ov-two{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  .ov-two .panel{margin-top:0;}
+
+  /* project structure list */
+  .file-panel{padding:18px 0 8px;}
+  .file-head{display:flex; align-items:center; gap:13px; padding:0 20px 13px; border-bottom:1px solid var(--line);}
+  .file-head .fh-ic{width:30px; height:30px; color:var(--indigo); flex:0 0 auto;}
+  .file-head h3{font-family:var(--serif); font-size:24px; color:var(--indigo); margin:0; line-height:1.05; -webkit-text-stroke:.35px var(--indigo);}
+  .file-head small{display:block; font-size:14px; color:var(--muted); margin-top:3px;}
+  .file-panel.proj .file-head{border-bottom:0; padding-bottom:4px;}
+  .files-list{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:10px; margin:10px 20px 2px; padding:2px 14px; background:#fbf8f1;}
+  .fl-row{display:flex; align-items:center; gap:13px; padding:10px 4px; border-bottom:1px solid var(--line-soft);}
+  .fl-row:last-child{border-bottom:0;}
+  .fl-row img{width:22px; height:22px; object-fit:contain; flex:0 0 auto;}
+  .fl-row .fl-ic{width:21px; height:21px; color:var(--indigo); flex:0 0 auto;}
+  .fl-name{font-family:var(--mono); font-size:14.5px; color:var(--indigo); font-weight:500; min-width:0; overflow-wrap:anywhere;}
+  .fl-desc{margin-left:auto; font-size:13.5px; color:var(--muted); text-align:right;}
+  .panel-foot{margin-top:11px; font-size:13px; color:var(--muted2); font-style:italic;}
+
+  /* runtime table */
+  .stack-wrap{padding:4px 20px 2px;}
+  table.stack{width:100%; border-collapse:collapse; font-size:15px;}
+  table.stack td{padding:10px 0; border-bottom:1px solid var(--line-soft);}
+  table.stack tr:last-child td{border-bottom:0;}
+  table.stack td:first-child{color:var(--indigo); font-weight:500; width:40%;}
+  table.stack td:last-child{color:var(--indigo); font-weight:600;}
+  table.stack td.mono{font-family:var(--mono); font-weight:500; font-size:13.5px;}
+
+  /* gadget preview (live) */
+  .live{position:sticky; top:18px;}
+  .live .panel-title{justify-content:space-between;}
+  .live .pt-left{display:flex; align-items:center; gap:11px;}
+  .enlarge{display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-family:var(--sans); font-size:13px; color:var(--indigo); border:1px solid var(--line); border-radius:7px; padding:5px 11px; background:#fff;}
+  .enlarge svg{width:13px; height:13px;}
+  .enlarge:hover{border-color:var(--indigo-soft);}
+  .frame-wrap{width:100%; height:560px; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#efe7d6; position:relative;}
+  .frame-wrap iframe{position:absolute; top:0; left:0; width:1300px; height:1760px; border:0; transform:scale(.312); transform-origin:top left;}
+  .frame-note{font-size:13px; color:var(--muted); margin-top:11px; text-align:center;}
+
+  /* ------------------------------------------------------- anatomy */
+  .track{display:flex; align-items:center; gap:16px; margin-bottom:14px;}
+  .track-label{flex:0 0 108px; font-family:var(--serif); font-size:19px; color:var(--indigo); display:flex; align-items:center; gap:9px; -webkit-text-stroke:.3px var(--indigo);}
+  .track-label img{width:22px; height:22px; object-fit:contain;}
+  .track-label svg{width:23px; height:23px; color:var(--indigo); flex:0 0 auto;}
+  .track-nodes{display:flex; flex-wrap:wrap; gap:10px; flex:1 1 auto;}
+  .enode{
+    border:1px solid var(--line); border-radius:10px; background:#fff;
+    padding:10px 16px; display:flex; align-items:center; gap:9px; cursor:pointer;
+    transition:border-color .12s, box-shadow .12s, transform .1s;
+  }
+  .enode:hover{border-color:var(--indigo-soft); transform:translateY(-1px);}
+  .enode.active{border:1.5px solid var(--terra); box-shadow:0 4px 14px rgba(180,80,46,.2);}
+  .enode .e-ic{width:20px; height:20px; flex:0 0 auto; color:var(--indigo);}
+  .enode .e-ic .ic{width:20px; height:20px;}
+  .enode .e-eng{font-family:var(--sans); font-size:15px; font-weight:500; color:var(--indigo); white-space:nowrap;}
+  .enode.active .e-ic{color:var(--terra);}
+  .enode.active .e-eng{color:var(--terra);}
+
+  /* spec card */
+  .spec{
+    margin-top:24px; border:1.5px solid var(--terra); border-radius:14px;
+    background:var(--paper); overflow:hidden; display:grid; grid-template-columns:420px minmax(0,1fr);
+    height:440px; box-shadow:0 12px 30px rgba(44,58,102,.14);
+  }
+  .spec-left{padding:24px 28px; border-right:1px solid var(--line); position:relative; overflow:hidden; animation:specRise .4s cubic-bezier(.2,.7,.2,1) both;}
+  .spec-head{display:flex; align-items:center; gap:13px; margin-bottom:20px;}
+  .spec-head .sh-ic{width:30px; height:30px; color:var(--indigo);}
+  .spec-head .sh-ic .ic{width:30px; height:30px;}
+  .spec-head .sh-title{font-family:var(--serif); font-size:30px; color:var(--indigo); line-height:1;}
+  .spec-tag{font-family:var(--sans); font-size:11px; letter-spacing:1.4px; font-weight:600; color:var(--indigo); border:1px solid var(--line); border-radius:6px; padding:4px 11px; text-transform:uppercase;}
+  .spec-line{margin:0 0 18px;}
+  .spec-line b{display:block; font-family:var(--serif); font-size:17px; color:var(--charcoal); font-weight:400; margin-bottom:4px;}
+  .spec-line .sl-txt{display:block; color:var(--ink); font-size:14.5px; line-height:1.55;}
+  .spec-wm{position:absolute; right:-22px; bottom:-22px; width:170px; height:170px; opacity:.05; pointer-events:none;}
+  .spec-right{position:relative; background:#2b3350; display:flex; flex-direction:column; min-height:0; min-width:0;}
+  .code-head{display:flex; align-items:center; gap:10px; flex:0 0 auto; padding:12px 16px; background:#232a42; color:#b9c3e0; font-size:13px; letter-spacing:.4px; border-bottom:1px solid #1c2236;}
+  .code-head .cref{font-family:var(--mono); color:#8ea2d6;}
+  .code-copy{margin-left:auto; appearance:none; background:transparent; border:1px solid #45507a; color:#c4cdea; border-radius:6px; padding:4px 13px; cursor:pointer; font-family:var(--sans); font-size:12.5px; display:inline-flex; align-items:center; gap:6px; transition:background .15s, border-color .15s;}
+  .code-copy svg{width:13px; height:13px;}
+  .code-copy:hover{background:#333c5c; border-color:#5a67a0;}
+  pre.code{margin:0; padding:14px 16px 16px; overflow:auto; flex:1 1 auto; min-height:0; min-width:0; font-family:var(--mono); font-size:14px; line-height:1.7; color:#e7ecf7; animation:codeFade .5s ease both;}
+  pre.code .ln{display:inline-block; width:2.4em; color:#5f6f9c; text-align:right; margin-right:16px; user-select:none;}
+  pre.code::-webkit-scrollbar{width:12px; height:12px;}
+  pre.code::-webkit-scrollbar-track{background:#232a42;}
+  pre.code::-webkit-scrollbar-thumb{background:#454f78; border-radius:6px; border:2px solid #2b3350;}
+  @keyframes specRise{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;}}
+  @keyframes codeFade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .code-warn{padding:16px; color:#d9b48f; font-size:13px; line-height:1.6;}
+  .code-warn code{color:#fff;}
+
+  /* footer */
+  .footer{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:40px; padding-top:18px; border-top:1px solid var(--line-soft); color:var(--muted2); font-size:13.5px; letter-spacing:.3px;}
+  .footer .fd{width:7px; height:7px; background:var(--terra); clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
+
+  .ic{width:24px;height:24px;object-fit:contain;display:inline-block;vertical-align:middle;}
+
+  @media (max-width:1080px){
+    .overview{grid-template-columns:minmax(0,1fr);}
+    .live{position:static;}
+    .ov-two{grid-template-columns:minmax(0,1fr);}
+    .hood{grid-template-columns:1fr;}
+    .hood-col{border-left:0; border-top:1px solid var(--line-soft); padding:12px 4px;}
+    .hood-col:first-child{border-top:0;}
+    .spec{grid-template-columns:1fr; min-height:0; height:auto;}
+    .spec-right{min-height:360px;}
+    .spec-left{border-right:0; border-bottom:1px solid var(--line);}
+    .lc-arrow{transform:rotate(90deg); padding:6px 0;}
+    .title-sub{display:none;}
+  }
+
+  /* ---------------------------------------------------------- phones */
+  @media (max-width:600px){
+    body{overflow-x:hidden;}
+    .wrap{padding:16px 14px 34px;}
+
+    /* top bar */
+    .topbar{flex-wrap:wrap; gap:12px; padding-bottom:13px; border-bottom-width:2px;}
+    .brand{gap:9px; flex-wrap:wrap; row-gap:4px;}
+    .logo,.logo img{width:38px; height:38px;}
+    .title-tif{font-size:18px;}
+    .brand .sep{height:24px;}
+    .title-eng{font-size:21px; white-space:normal;}
+    .topright{width:100%;}
+    .tabs{width:100%;}
+    .tab{flex:1 1 0; padding:10px 0; text-align:center; font-size:14px;}
+
+    /* section head */
+    .sec-head{flex-wrap:wrap; gap:8px 12px; margin:24px 0 16px;}
+    .sec-num{width:36px; height:36px; font-size:17px;}
+    .sec-title{font-size:30px;}
+    .sec-div{display:none;}
+    .sec-lead{flex-basis:100%;}
+    .sec-lead .lead-t{font-size:18px;}
+    .sec-lead .lead-s{font-size:14px;}
+
+    /* panels */
+    .panel{padding:16px 15px;}
+    .panel-title h3{font-size:21px;}
+    .file-head h3, .spec-head .sh-title{font-size:22px;}
+
+    /* lifecycle cards stack */
+    .lifecycle{flex-direction:column; align-items:stretch;}
+    .lc-card, .lc-card.build, .lc-card.review{flex:1 1 auto; width:100%;}
+    .lc-arrow{transform:rotate(90deg); padding:4px 0; align-self:center;}
+    .lc-head h4{font-size:21px;}
+    .field-grid{grid-template-columns:1fr;}
+    .field{padding:12px 13px;}
+
+    /* gadget preview fits width */
+    .frame-wrap{height:430px;}
+    .frame-wrap iframe{transform:scale(.24);}
+
+    /* project / runtime insets a touch tighter */
+    .file-head{padding:0 15px 12px;}
+    .files-list{margin:10px 15px 2px;}
+    .stack-wrap{padding:4px 15px 2px;}
+    .hood-panel .panel-title{padding:0 15px 12px;}
+
+    /* anatomy */
+    .track{flex-wrap:wrap; gap:10px 12px; margin-bottom:12px;}
+    .track-label{flex:0 0 100%; font-size:18px;}
+    .track-nodes{gap:8px;}
+    .enode{padding:9px 13px;}
+    .enode .e-eng{font-size:14px;}
+
+    /* spec card */
+    .spec{margin-top:18px; border-radius:12px;}
+    .spec-left{padding:20px 18px;}
+    .spec-right{min-height:320px;}
+    .code-head{padding:10px 13px; font-size:12px;}
+    .code-copy{padding:4px 10px; font-size:11.5px;}
+    pre.code{font-size:12.5px; padding:12px 13px;}
+    pre.code .ln{width:2.2em; margin-right:12px;}
+
+    .footer{margin-top:30px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================================================== TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><img src="assets/logo.png" alt=""></span>
+      <span class="title-tif">ⵜⴰⵎⴰⵣⵉⵖⵜ</span>
+      <span class="sep"></span>
+      <span class="title-eng">Tamazight Gadget</span>
+      <span class="title-sub">Schematic map · Technical documentation</span>
+    </div>
+    <div class="topright">
+      <div class="tabs">
+        <button class="tab active" data-go="overview">Overview</button>
+        <button class="tab" data-go="anatomy">Anatomy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== OVERVIEW -->
+  <section id="overview">
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <h2 class="sec-title">Overview</h2>
+      <span class="sec-div"></span>
+      <span class="sec-lead">
+        <span class="lead-t">From a word to a wiki entry</span>
+        <span class="lead-s">Build the entry, review its wikitext, then create the page in MediaWiki.</span>
+      </span>
+    </div>
+
+    <div class="overview">
+      <!-- left -->
+      <div>
+        <!-- entry lifecycle -->
+        <div class="panel">
+          <div class="panel-title">
+            <svg class="pt-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9.3 14.7 12 12 14.7 9.3 12Z"/><path d="M12 1.5 15 5 13 5 13 7.5 11 7.5 11 5 9 5Z"/><path d="M12 22.5 9 19 11 19 11 16.5 13 16.5 13 19 15 19Z"/><path d="M1.5 12 5 9 5 11 7.5 11 7.5 13 5 13 5 15Z"/><path d="M22.5 12 19 15 19 13 16.5 13 16.5 11 19 11 19 9Z"/></svg>
+            <h3>Entry lifecycle</h3><small>All form fields contribute to one entry.</small>
+          </div>
+
+          <div class="lifecycle">
+            <!-- 01 build -->
+            <div class="lc-card build">
+              <div class="lc-head"><span class="lc-badge">01</span><h4>Build the entry</h4></div>
+              <div class="field-grid">
+                <div class="field"><img src="assets/icons/icon-02.png" alt=""><span class="f-tx"><span class="f-tif">ⵜⴰⴳⵓⵔⵉ</span><span class="f-en">Word</span></span></div>
+                <div class="field"><img src="assets/icons/icon-03.png" alt=""><span class="f-tx"><span class="f-en">Grammar</span></span></div>
+                <div class="field"><img src="assets/icons/icon-04.png" alt=""><span class="f-tx"><span class="f-en">Pronunciation</span></span></div>
+                <div class="field"><img src="assets/icons/icon-05.png" alt=""><span class="f-tx"><span class="f-en">Definitions</span></span></div>
+                <div class="field"><img src="assets/icons/icon-06.png" alt=""><span class="f-tx"><span class="f-en">Examples</span></span></div>
+                <div class="field"><img src="assets/icons/icon-07.png" alt=""><span class="f-tx"><span class="f-en">Synonyms</span></span></div>
+              </div>
+              <div class="lc-cap">Type in Latin. Word forms become Tifinagh.</div>
+            </div>
+
+            <div class="lc-arrow"><svg viewBox="0 0 26 18"><path d="M0 9H14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M12 2.5 23 9 12 15.5Z" fill="currentColor"/></svg></div>
+
+            <!-- 02 review -->
+            <div class="lc-card review">
+              <div class="lc-head"><span class="lc-badge">02</span><h4>Review wikitext</h4></div>
+              <div class="wk"><span class="ln">1</span>== {{<span class="wk-blue">lang|zgh</span>}} ==
+<span class="ln">2</span>=== {{<span class="wk-blue">noun|zgh</span>}} ===
+<span class="ln">3</span>'''(ⵜⴰⴳⵓⵔⵉ / word)'''
+<span class="ln">4</span># ...</div>
+              <div class="lc-cap">Updates on every edit.</div>
+            </div>
+
+            <div class="lc-arrow"><svg viewBox="0 0 26 18"><path d="M0 9H14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M12 2.5 23 9 12 15.5Z" fill="currentColor"/></svg></div>
+
+            <!-- 03 create -->
+            <div class="lc-card">
+              <div class="lc-head"><span class="lc-badge">03</span><h4>Create the page</h4></div>
+              <div class="create-mid">
+                <span class="doc-tile"><svg class="doc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 12h6M9 16h6" stroke-width="1.3"/></svg></span>
+                <span class="cm-line">Save the compiled entry</span>
+                <button class="save-btn" type="button">Save</button>
+                <span class="api-chip">mw.Api</span>
+                <span class="cm-line">Creates a new wiki page.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- under the hood -->
+        <div class="panel hood-panel">
+          <div class="panel-title">
+            <svg class="pt-svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            <h3>Under the hood</h3><small>Key technologies that power the gadget.</small>
+          </div>
+          <div class="hood">
+            <div class="hood-col"><h5>Latin → Tifinagh</h5><p>Transliteration on the client side.</p></div>
+            <div class="hood-col"><h5>Grammar visibility</h5><p>Show the right fields for each part of speech.</p></div>
+            <div class="hood-col"><h5>Wikitext compiler</h5><p>Build MediaWiki markup from the form.</p></div>
+          </div>
+        </div>
+
+        <!-- project structure + runtime -->
+        <div class="ov-two" style="margin-top:22px;">
+          <div>
+            <div class="panel file-panel proj">
+              <div class="file-head">
+                <svg class="fh-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/></svg>
+                <div class="fh-tx"><h3>Project structure</h3><small>Main files in the standalone gadget.</small></div>
+              </div>
+              <div class="files-list">
+                <div class="fl-row"><svg class="fl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/><path d="M8 13h8M8 16h5"/></svg><span class="fl-name">gadget-preview.html</span><span class="fl-desc">Standalone gadget preview</span></div>
+                <div class="fl-row"><svg class="fl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/><path d="M8 13h8M8 16h5"/></svg><span class="fl-name">dist/gadget.js</span><span class="fl-desc">Interface + logic</span></div>
+                <div class="fl-row"><svg class="fl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/><path d="M8 13h8M8 16h5"/></svg><span class="fl-name">dist/gadget.css</span><span class="fl-desc">Visual styles</span></div>
+                <div class="fl-row"><svg class="fl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/><path d="M8 13h8M8 16h5"/></svg><span class="fl-name">dist/assets/header.png</span><span class="fl-desc">Header artwork</span></div>
+              </div>
+            </div>
+            <div class="panel-foot">Standalone runtime · No build step.</div>
+          </div>
+
+          <div class="panel file-panel">
+            <div class="file-head">
+              <svg class="fh-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>
+              <div class="fh-tx"><h3>Runtime at a glance</h3><small>Key technologies and terms.</small></div>
+            </div>
+            <div class="stack-wrap">
+              <table class="stack">
+                <tr><td>Platform</td><td>MediaWiki</td></tr>
+                <tr><td>Logic</td><td>Vanilla JavaScript</td></tr>
+                <tr><td>Styling</td><td>CSS</td></tr>
+                <tr><td>Publishing</td><td class="mono">mw.Api · createonly</td></tr>
+                <tr><td>Script</td><td>Latin → Tifinagh</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: gadget preview -->
+      <div class="live">
+        <div class="panel">
+          <div class="panel-title">
+            <span class="pt-left">
+              <img class="pt-ic" src="assets/icons/icon-09.png" alt="">
+              <h3>Gadget preview</h3>
+            </span>
+            <a class="enlarge" href="gadget-preview.html" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M21 3l-9 9M10 21H3v-7"/></svg>
+              Enlarge
+            </a>
+          </div>
+          <div class="frame-wrap"><iframe id="live-frame" title="Rendered Tamazight gadget" src="gadget-preview.html" loading="lazy"></iframe></div>
+          <div class="frame-note" id="frame-note">The interface these components power.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== ANATOMY -->
+  <section id="anatomy">
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <h2 class="sec-title">Anatomy</h2>
+      <span class="sec-div"></span>
+      <span class="sec-lead">
+        <span class="lead-t">Select a component to inspect its purpose and source.</span>
+        <span class="lead-s">What it does, its purpose, and the real code behind it.</span>
+      </span>
+    </div>
+
+    <div class="track">
+      <div class="track-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v11H3z"/><path d="M9 20h6M12 16v4"/></svg>Interface</div>
+      <div class="track-nodes" id="ui-nodes"></div>
+    </div>
+    <div class="track">
+      <div class="track-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z"/><path d="M19.3 12c0-.5 0-.9-.1-1.4l1.8-1.4-1.8-3.1-2.1.8c-.7-.6-1.4-1-2.3-1.3L14.4 3h-3.6l-.4 2.4c-.8.3-1.6.7-2.3 1.3l-2.1-.8-1.8 3.1 1.8 1.4c-.1.5-.1.9-.1 1.4s0 .9.1 1.4l-1.8 1.4 1.8 3.1 2.1-.8c.7.6 1.4 1 2.3 1.3l.4 2.4h3.6l.4-2.4c.8-.3 1.6-.7 2.3-1.3l2.1.8 1.8-3.1-1.8-1.4c.1-.5.1-.9.1-1.4z"/></svg>Engine</div>
+      <div class="track-nodes" id="engine-nodes"></div>
+    </div>
+
+    <div class="spec" id="spec"></div>
+  </section>
+
+  <!-- footer -->
+  <div class="footer"><span class="fd"></span>Tamazight Gadget · Schematic map<span class="fd"></span></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const S = p => '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+  const I = {
+    header:   S('<path d="M12 2.6l2.3 2.3-2.3 2.3-2.3-2.3z"/><path d="M12 16.8l2.3 2.3-2.3 2.3-2.3-2.3z"/><path d="M4.9 9.7l2.3 2.3-2.3 2.3-2.3-2.3z"/><path d="M19.1 9.7l2.3 2.3-2.3 2.3-2.3-2.3z"/><path d="M12 9.7l2.3 2.3-2.3 2.3-2.3-2.3z"/>'),
+    word:     S('<path d="M6 3h7l4 4v14H6z"/><path d="M13 3v4h4"/><path d="M9 12.5h6M9 15.5h6"/>'),
+    grammar:  S('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.6 5.4a.6.6 0 1 0 0 1.2.6.6 0 0 0 0-1.2zM4.6 11.4a.6.6 0 1 0 0 1.2.6.6 0 0 0 0-1.2zM4.6 17.4a.6.6 0 1 0 0 1.2.6.6 0 0 0 0-1.2z"/>'),
+    pron:     S('<path d="M4 9.5h3L11 6v12l-4-3.5H4z"/><path d="M15 9.5a3.2 3.2 0 0 1 0 5"/><path d="M17.6 7.4a6 6 0 0 1 0 9.2"/>'),
+    defs:     S('<path d="M5 4h9l5 5v11H5z"/><path d="M14 4v5h5"/><path d="M8 13h8M8 16h5"/>'),
+    examples: S('<path d="M6 8h3.2v4.2c0 2-1.1 3.2-3.2 3.8"/><path d="M14 8h3.2v4.2c0 2-1.1 3.2-3.2 3.8"/>'),
+    related:  S('<path d="M9.2 14.8l5.6-5.6"/><path d="M11 7l1.6-1.6a3.5 3.5 0 0 1 5 5L16 12"/><path d="M13 17l-1.6 1.6a3.5 3.5 0 0 1-5-5L8 12"/>'),
+    save:     S('<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4"/><path d="M8 13.5h8V20H8z"/>'),
+    eye:      S('<path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/>'),
+    translit: S('<path d="M4 9h14M14 5l4 4-4 4"/><path d="M20 15H6M10 11l-4 4 4 4"/>'),
+    compile:  S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M10 12l-1.6 1.6L10 15.2M14 12l1.6 1.6L14 15.2"/>'),
+    visibility: S('<path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/>'),
+    hash:     S('<path d="M9.5 4L8 20M16 4l-1.5 16M5 9h14M4 15h14"/>'),
+    plus:     S('<path d="M12 5v14M5 12h14"/>'),
+    upload:   S('<path d="M7 18a4 4 0 0 1-.6-7.95A5.5 5.5 0 0 1 17 9.4a3.5 3.5 0 0 1 .6 6.97"/><path d="M12 13v6M9.5 15.3 12 12.8l2.5 2.5"/>')
+  };
+
+  /* -------------------------------------------------- element registry */
+  const ELEMENTS = [
+    // ---- Interface ----
+    {id:'header', track:'ui', ic:I.header, eng:'Header',
+     what:'The ornate Amazigh carpet band across the top — artwork from assets/header.png set as a CSS background.',
+     purpose:'Give the tool an authentic Amazigh identity and frame the whole form.',
+     src:'css', kind:'css', from:'.tzm-header {'},
+
+    {id:'word', track:'ui', ic:I.word, eng:'Word',
+     what:'The headword field. You type in Latin; it transliterates live to Tifinagh and drives the preview headword.',
+     purpose:'Capture the dictionary word — the entry is built around it.',
+     src:'js', kind:'between', from:"const fsWord = fieldset(", to:'colForm.appendChild(fsWord);'},
+
+    {id:'grammar', track:'ui', ic:I.grammar, eng:'Grammar',
+     what:'Shows the fields that match the selected part of speech.',
+     purpose:'Capture the right morphology for each entry.',
+     src:'js', kind:'between', from:"const fsGram = fieldset(", to:'colForm.appendChild(fsGram);'},
+
+    {id:'pron', track:'ui', ic:I.pron, eng:'Pronunciation',
+     what:'A single IPA field.',
+     purpose:'Record how the word is pronounced — emitted as an {{IPA}} line.',
+     src:'js', kind:'between', from:"const fsMeta = fieldset(", to:'colForm.appendChild(fsMeta);'},
+
+    {id:'definitions', track:'ui', ic:I.defs, eng:'Definitions',
+     what:'A repeatable list of meanings, rendered row by row with add / remove controls.',
+     purpose:'Let one entry hold several senses — each becomes a numbered line.',
+     src:'js', kind:'func', from:'function renderDefinitions()'},
+
+    {id:'examples', track:'ui', ic:I.examples, eng:'Examples',
+     what:'Repeatable example rows — a Tamazight sentence (auto-transliterated) plus its translation.',
+     purpose:'Show the word in use; examples attach under the first definition.',
+     src:'js', kind:'func', from:'function renderExamples()'},
+
+    {id:'related', track:'ui', ic:I.related, eng:'Related words',
+     what:'A comma-separated synonyms field.',
+     purpose:'Link the entry to related words — emitted as a Synonyms section.',
+     src:'js', kind:'between', from:"const fsRel = fieldset(", to:'colForm.appendChild(fsRel);'},
+
+    {id:'savebar', track:'ui', ic:I.save, eng:'Save',
+     what:'The terracotta Save button. Its click compiles the wikitext and calls submit.',
+     purpose:'Commit the finished entry (real save in MediaWiki; simulated locally).',
+     src:'js', kind:'between', from:"const submitBtn = el('button', { id: 'tzm-submit-btn'", to:'colForm.appendChild(submitBtn);'},
+
+    {id:'preview', track:'ui', ic:I.eye, eng:'Preview',
+     what:'The read-only panel on the right that mirrors the compiled wikitext.',
+     purpose:'Show exactly what will be saved, updated on every change.',
+     src:'js', kind:'func', from:'function renderPreview()'},
+
+    // ---- Engine ----
+    {id:'translit', track:'engine', ic:I.translit, eng:'Transliteration',
+     what:'Maps a Latin string to Tifinagh, trying two-letter digraphs (gw, kw) before single letters.',
+     purpose:'Let editors type in Latin and get correct Tifinagh automatically.',
+     src:'js', kind:'func', from:'function latinToTifinagh('},
+
+    {id:'compile', track:'engine', ic:I.compile, eng:'Compiler',
+     what:'Assembles the whole entry from state into MediaWiki wikitext — headword, IPA, morphology, definitions, examples, synonyms.',
+     purpose:'Turn the form into the exact text the wiki will store.',
+     src:'js', kind:'func', from:'function compileWikitext()'},
+
+    {id:'visibility', track:'engine', ic:I.visibility, eng:'Visibility',
+     what:'Shows the noun block or the verb block depending on the selected part of speech.',
+     purpose:'Only ask for the grammar fields that apply to this word.',
+     src:'js', kind:'func', from:'function updatePosVisibility()'},
+
+    {id:'counter', track:'engine', ic:I.hash, eng:'Counter-form',
+     what:'Flips the morphology field: a singular headword asks for the plural, a plural headword asks for the singular.',
+     purpose:'Capture the opposite number form with the right label.',
+     src:'js', kind:'func', from:'function updateCounterForm()'},
+
+    {id:'rows', track:'engine', ic:I.plus, eng:'Dynamic rows',
+     what:'The click handlers that grow and shrink the definition and example lists.',
+     purpose:'Make the dynamic lists editable without a framework.',
+     src:'js', kind:'between', from:"if (action === 'add-def') {", to:'renderExamples();'},
+
+    {id:'submit', track:'engine', ic:I.upload, eng:'Submit',
+     what:'Posts the wikitext via mw.Api with a CSRF token; outside MediaWiki it simulates and logs instead.',
+     purpose:'Actually create the entry on the wiki.',
+     src:'js', kind:'func', from:'function submitEntry('}
+  ];
+
+  /* -------------------------------------------------- source + slicing */
+  const SRC = {js:null, css:null, ok:false};
+  function lineOf(text, idx){ return text.slice(0, idx).split('\n').length; }
+  function sliceFunc(text, fromStr){
+    const start = text.indexOf(fromStr);
+    if(start < 0) return null;
+    let i = text.indexOf('{', start);
+    if(i < 0) return null;
+    let depth = 0;
+    for(; i < text.length; i++){
+      const c = text[i];
+      if(c === '{') depth++;
+      else if(c === '}'){ depth--; if(depth === 0){ i++; break; } }
+    }
+    return {code:text.slice(start, i), line:lineOf(text, start)};
+  }
+  function sliceCss(text, selStr){
+    const start = text.indexOf(selStr);
+    if(start < 0) return null;
+    let i = text.indexOf('{', start), depth = 0;
+    for(; i < text.length; i++){
+      const c = text[i];
+      if(c === '{') depth++;
+      else if(c === '}'){ depth--; if(depth === 0){ i++; break; } }
+    }
+    return {code:text.slice(start, i), line:lineOf(text, start)};
+  }
+  function sliceBetween(text, fromStr, toStr){
+    const start = text.indexOf(fromStr);
+    if(start < 0) return null;
+    const hit = text.indexOf(toStr, start);
+    if(hit < 0) return null;
+    const end = hit + toStr.length;
+    return {code:text.slice(start, end), line:lineOf(text, start)};
+  }
+  function getSlice(elm){
+    const text = elm.src === 'css' ? SRC.css : SRC.js;
+    if(!text) return null;
+    if(elm.kind === 'func') return sliceFunc(text, elm.from);
+    if(elm.kind === 'css')  return sliceCss(text, elm.from);
+    return sliceBetween(text, elm.from, elm.to);
+  }
+  function dedent(code){
+    const lines = code.replace(/\s+$/,'').split('\n');
+    let min = Infinity;
+    lines.forEach(l=>{ if(l.trim()){ const m = l.match(/^\s*/)[0].length; if(m < min) min = m; } });
+    if(min === Infinity) min = 0;
+    return lines.map(l=>l.slice(min)).join('\n');
+  }
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* -------------------------------------------------- rendering */
+  function enodeHTML(e){
+    return '<div class="enode" data-id="'+e.id+'"><span class="e-ic">'+e.ic+'</span>'+
+           '<span class="e-eng">'+e.eng+'</span></div>';
+  }
+  function buildNodes(){
+    document.getElementById('ui-nodes').innerHTML =
+      ELEMENTS.filter(e=>e.track==='ui').map(enodeHTML).join('');
+    document.getElementById('engine-nodes').innerHTML =
+      ELEMENTS.filter(e=>e.track==='engine').map(enodeHTML).join('');
+    document.querySelectorAll('.enode').forEach(n=>{
+      n.addEventListener('click', ()=>selectElement(n.dataset.id));
+    });
+  }
+  function codeBlockHTML(slice){
+    if(!slice){
+      return '<div class="code-warn">Could not locate this snippet in the source — the marker may have changed. The rest of the spec is still accurate.</div>';
+    }
+    const code = dedent(slice.code);
+    const lines = code.split('\n');
+    const start = slice.line;
+    let body = '';
+    lines.forEach((ln, i)=>{ body += '<span class="ln">'+(start+i)+'</span>'+esc(ln)+'\n'; });
+    return '<pre class="code">'+body+'</pre>';
+  }
+  function selectElement(id){
+    const e = ELEMENTS.find(x=>x.id===id);
+    if(!e) return;
+    document.querySelectorAll('.enode').forEach(n=>n.classList.toggle('active', n.dataset.id===id));
+    const slice = getSlice(e);
+    const cref = e.src==='css' ? 'dist/gadget.css' : 'dist/gadget.js';
+    const line = slice ? ' : '+slice.line : '';
+    const tag = e.track==='ui' ? 'INTERFACE' : 'ENGINE';
+    const copySvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+    let right;
+    if(!SRC.ok){
+      right = '<div class="code-head"><span class="cref">'+cref+'</span></div>'+
+        '<div class="code-warn">Live code isn\'t loaded. Open this doc through the local server '+
+        '(<code>http://127.0.0.1:8765/SCHEMATIC-MAP.html</code>) so it can read <code>'+cref+'</code>.</div>';
+    } else {
+      right = '<div class="code-head"><span class="cref">'+cref+line+'</span>'+
+              '<button class="code-copy" type="button">'+copySvg+'Copy</button></div>'+
+              codeBlockHTML(slice);
+    }
+    const wm = e.ic ? e.ic.replace('class="ic"','class="spec-wm"') : '';
+    document.getElementById('spec').innerHTML =
+      '<div class="spec-left">'+
+        '<div class="spec-head"><span class="sh-ic">'+e.ic+'</span>'+
+          '<span class="sh-title">'+e.eng+'</span><span class="spec-tag">'+tag+'</span></div>'+
+        '<p class="spec-line"><b>What it does</b><span class="sl-txt">'+e.what+'</span></p>'+
+        '<p class="spec-line"><b>Purpose</b><span class="sl-txt">'+e.purpose+'</span></p>'+
+        wm+
+      '</div>'+
+      '<div class="spec-right">'+right+'</div>';
+    const copy = document.querySelector('#spec .code-copy');
+    if(copy) copy.addEventListener('click', ()=>{
+      const txt = slice ? dedent(slice.code) : '';
+      navigator.clipboard.writeText(txt).then(()=>{
+        copy.innerHTML=copySvg+'Copied'; setTimeout(()=>{copy.innerHTML=copySvg+'Copy';},1300);
+      }).catch(()=>{ copy.innerHTML=copySvg+'Err'; setTimeout(()=>{copy.innerHTML=copySvg+'Copy';},1300); });
+    });
+  }
+
+  /* -------------------------------------------------- tabs / scroll spy */
+  function wireTabs(){
+    document.querySelectorAll('.tab').forEach(t=>{
+      t.addEventListener('click', ()=>{
+        document.getElementById(t.dataset.go).scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+    const secs = ['overview','anatomy'].map(id=>document.getElementById(id));
+    const io = new IntersectionObserver(ents=>{
+      ents.forEach(en=>{
+        if(en.isIntersecting){
+          document.querySelectorAll('.tab').forEach(t=>
+            t.classList.toggle('active', t.dataset.go===en.target.id));
+        }
+      });
+    }, {rootMargin:'-45% 0px -45% 0px'});
+    secs.forEach(s=>io.observe(s));
+  }
+
+  /* -------------------------------------------------- boot */
+  async function loadSources(){
+    try{
+      const [js, css] = await Promise.all([
+        fetch('dist/gadget.js').then(r=>{ if(!r.ok) throw 0; return r.text(); }),
+        fetch('dist/gadget.css').then(r=>{ if(!r.ok) throw 0; return r.text(); })
+      ]);
+      SRC.js = js; SRC.css = css; SRC.ok = true;
+    }catch(e){ SRC.ok = false; }
+  }
+  async function init(){
+    buildNodes(); wireTabs();
+    await loadSources();
+    if(!SRC.ok){
+      document.getElementById('frame-note').innerHTML =
+        '⚠ Opened without a server — live code &amp; preview need <code>http://127.0.0.1:8765/SCHEMATIC-MAP.html</code>.';
+    }
+    selectElement('grammar'); // open on Grammar, like the reference
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
